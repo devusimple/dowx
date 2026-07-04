@@ -1,2 +1,9 @@
-fastapi
-uvicorn
+# Runtime
+fastapi>=0.115
+uvicorn[standard]>=0.34
+yt-dlp>=2024
+httpx>=0.28
+
+# Dev
+pytest>=8
+ruff>=0.9
