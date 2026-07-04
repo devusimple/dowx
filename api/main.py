@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
+from adapters import VideoInfo
 from adapters.youtube import get_direct_url, get_info
 
 app = FastAPI(title="dowx")
@@ -41,26 +42,40 @@ async def api_health():
     return {"status": "ok"}
 
 
+def _format_formats(formats):
+    return [
+        {
+            "format_id": f.format_id,
+            "ext": f.ext,
+            "resolution": f.resolution,
+            "filesize": f.filesize,
+            "vcodec": f.vcodec,
+            "acodec": f.acodec,
+        }
+        for f in formats
+    ]
+
+
+def _format_video(video: VideoInfo):
+    return {
+        "title": video.title,
+        "duration": video.duration,
+        "thumbnail": video.thumbnail,
+        "formats": _format_formats(video.formats),
+    }
+
+
 @app.post("/api/info")
 async def api_info(req: InfoRequest):
     try:
-        video = await asyncio.to_thread(get_info, req.url)
-        return {
-            "title": video.title,
-            "duration": video.duration,
-            "thumbnail": video.thumbnail,
-            "formats": [
-                {
-                    "format_id": f.format_id,
-                    "ext": f.ext,
-                    "resolution": f.resolution,
-                    "filesize": f.filesize,
-                    "vcodec": f.vcodec,
-                    "acodec": f.acodec,
-                }
-                for f in video.formats
-            ],
-        }
+        result = await asyncio.to_thread(get_info, req.url)
+        if isinstance(result, tuple):
+            title, videos = result
+            return {
+                "playlist": title,
+                "videos": [_format_video(v) for v in videos],
+            }
+        return _format_video(result)
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 
