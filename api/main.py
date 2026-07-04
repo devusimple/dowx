@@ -28,6 +28,14 @@ class DownloadRequest(BaseModel):
     url: str
     format_id: str
 
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the dowx API!"}
+
+@app.get("/api/health")
+async def api_health():
+    return {"status": "ok"}
+
 
 @app.post("/api/info")
 async def api_info(req: InfoRequest):
