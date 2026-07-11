@@ -1,20 +1,28 @@
 from __future__ import annotations
 
 import os
+import shutil
+import tempfile
 from pathlib import Path
 
 import yt_dlp
 
 from . import Format, VideoInfo
 
-_COOKIES_FILE = Path(__file__).resolve().parent.parent.parent / "cookies.txt"
+_SOURCE_COOKIES = Path(__file__).resolve().parent.parent.parent / "cookies.txt"
+_COOKIES_FILE: str | None = None
+
+if _SOURCE_COOKIES.exists():
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".txt")
+    shutil.copy2(str(_SOURCE_COOKIES), tmp.name)
+    _COOKIES_FILE = tmp.name
 
 _ydl_opts = {
     "quiet": True,
     "no_warnings": True,
 }
-if _COOKIES_FILE.exists():
-    _ydl_opts["cookiefile"] = str(_COOKIES_FILE)
+if _COOKIES_FILE:
+    _ydl_opts["cookiefile"] = _COOKIES_FILE
 
 
 def _parse_formats(raw: dict) -> list[Format]:
