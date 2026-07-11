@@ -270,3 +270,5 @@ This project is open source and available under the **MIT License**.
 <p align="center">
   Made with ❤️ by <a href="https://github.com/devusimple">Mehedi Hasan</a>
 </p>
+
+yt-dlp>=2024 -> yt-dlp==2026.7.4

@@ -1,8 +1,8 @@
 # Runtime
-fastapi>=0.115
-uvicorn[standard]>=0.34
-yt-dlp>=2024
+fastapi>=0.120
+uvicorn[standard]>=0.40
 httpx>=0.28
+yt-dlp==2026.7.4
 
 # Dev
 ruff>=0.9
