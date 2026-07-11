@@ -1,10 +1,20 @@
 from __future__ import annotations
 
+import os
+from pathlib import Path
+
 import yt_dlp
 
 from . import Format, VideoInfo
 
-_ydl_opts = {"quiet": True, "no_warnings": True}
+_COOKIES_FILE = Path(__file__).resolve().parent.parent.parent / "cookies.txt"
+
+_ydl_opts = {
+    "quiet": True,
+    "no_warnings": True,
+}
+if _COOKIES_FILE.exists():
+    _ydl_opts["cookiefile"] = str(_COOKIES_FILE)
 
 
 def _parse_formats(raw: dict) -> list[Format]:
