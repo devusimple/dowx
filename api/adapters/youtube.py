@@ -20,6 +20,7 @@ if _SOURCE_COOKIES.exists():
 _ydl_opts = {
     "quiet": True,
     "no_warnings": True,
+    "extractor_args": {"youtube": {"skip": ["dash", "hls", "translations"]}},
 }
 if _COOKIES_FILE:
     _ydl_opts["cookiefile"] = _COOKIES_FILE
